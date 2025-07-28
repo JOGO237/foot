@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Compte à Rebours Circulaire</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: black;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      color: white;
+      font-family: Arial, sans-serif;
+    }
+
+    .countdown-container {
+      position: relative;
+      width: 40vmin;
+      height: 40vmin;
+    }
+
+    svg {
+      width: 100%;
+      height: 100%;
+      transform: rotate(-90deg);
+    }
+
+    .circle-bg {
+      fill: none;
+      stroke: #333;
+      stroke-width: 8;
+    }
+
+    .circle-progress {
+      fill: none;
+      stroke: #00ff88;
+      stroke-width: 8;
+      stroke-linecap: round;
+      stroke-dasharray: 100;
+      stroke-dashoffset: 100;
+      transition: stroke-dashoffset 0.1s linear;
+    }
+
+    .countdown-text {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 5vmin;
+      font-weight: bold;
+      color: #ffffff;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="countdown-container">
+    <svg viewBox="0 0 100 100">
+      <circle class="circle-bg" cx="50" cy="50" r="45" />
+      <circle class="circle-progress" cx="50" cy="50" r="45" />
+    </svg>
+    <div class="countdown-text" id="countdownText">3</div>
+  </div>
+
+  <script>
+    const duration = 3; // secondes
+    const radius = 45;
+    const circumference = 2 * Math.PI * radius;
+
+    const circle = document.querySelector('.circle-progress');
+    const text = document.getElementById('countdownText');
+
+    circle.style.strokeDasharray = circumference;
+    circle.style.strokeDashoffset = circumference;
+
+    let startTime = null;
+
+    function animateCountdown(timestamp) {
+      if (!startTime) startTime = timestamp;
+      const elapsed = (timestamp - startTime) / 1000;
+      const progress = Math.min(elapsed / duration, 1);
+      const offset = circumference * (1 - progress);
+      circle.style.strokeDashoffset = offset;
+
+      const secondsLeft = Math.ceil(duration - elapsed);
+      text.textContent = secondsLeft > 0 ? secondsLeft : "✔️";
+
+      if (progress < 1) {
+        requestAnimationFrame(animateCountdown);
+      }
+    }
+
+    requestAnimationFrame(animateCountdown);
+  </script>
+
+</body>
+</html>
